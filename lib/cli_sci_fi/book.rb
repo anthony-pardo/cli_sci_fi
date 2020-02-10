@@ -1,0 +1,3 @@
+class CliSciFi::Book
+
+end

@@ -1,11 +1,27 @@
 require "pry"
 class CliSciFi::Book
-  attr_accessor :title, :author, :publisher, :award
+  attr_accessor :title, :author, :publisher, :awards
 
   @@all = [] 
 
+  def initialize 
+    @awards = []
+  end
+
+  def add_award(award)
+    @awards << award
+  end
+
   def self.all
     @@all
+  end
+
+  def self.dual_winners 
+    dual_winners = []
+    @@all.each do |book|
+      dual_winners << book if book.awards.size == 2
+    end
+    dual_winners
   end
 
   def self.scrape_books 
@@ -33,9 +49,13 @@ class CliSciFi::Book
         book.title = hash[key] if key == "Novel\n" 
         book.author = hash[key] if key == "Author\n"
         book.publisher = hash[key] if key == "Publisher or publication\n"
-        book.award = "Nebula"
       end
-      @@all << book
+      if @@all.find{|b| b.title == book.title }
+        @@all.find{|b| b.title == book.title }.add_award("Nebula")
+      else
+        book.add_award("Nebula")
+        @@all << book
+      end
     end
   end
 
@@ -59,8 +79,8 @@ class CliSciFi::Book
         book.title = hash[key] if key == "Novel\n" 
         book.author = hash[key] if key == "Author(s)\n"
         book.publisher = hash[key] if key == "Publisher or publication\n"
-        book.award = "Hugo"
       end
+      book.add_award("Hugo")
       @@all << book
     end
   end

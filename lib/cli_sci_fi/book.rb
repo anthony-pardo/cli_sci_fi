@@ -1,11 +1,13 @@
 require "pry"
 class CliSciFi::Book
-  attr_accessor :title, :author, :publisher, :awards
+  attr_accessor :won, :title, :author, :publisher, :awards, :year
 
   @@all = [] 
 
   def initialize 
     @awards = []
+    @won = false
+    @year = ""
   end
 
   def add_award(award)
@@ -19,7 +21,7 @@ class CliSciFi::Book
   def self.dual_winners 
     dual_winners = []
     @@all.each do |book|
-      dual_winners << book if book.awards.size == 2
+      dual_winners << book if book.awards.size == 2 and book.won == true
     end
     dual_winners
   end
@@ -43,17 +45,29 @@ class CliSciFi::Book
     text_all_rows.each do |row_as_text|
       arr << column_names.zip(row_as_text).to_h
     end
-    arr.each do |hash|
+    arr.each.with_index do |hash, i|
+      begin
+        new_author = CliSciFi::Author.new(doc.css('span.vcard a')[i].attribute('href').value)
+      rescue
+        new_author = CliSciFi::Author.new('nil')
+      else 
+        new_author = CliSciFi::Author.new(doc.css('span.vcard a')[i].attribute('href').value)
+      end
       book = self.new 
       hash.each do |key, value|
         book.title = hash[key] if key == "Novel\n" 
-        book.author = hash[key] if key == "Author\n"
+        #book.author = hash[key] if key == "Author\n"
+        new_author.name = hash[key] if key == "Author\n"
         book.publisher = hash[key] if key == "Publisher or publication\n"
+        book.won = true if key == "Year\n" and hash[key] != ""
+        book.year = hash[key] if key == "Year\n" and hash[key] != ""
       end
       if @@all.find{|b| b.title == book.title }
         @@all.find{|b| b.title == book.title }.add_award("Nebula")
       else
         book.add_award("Nebula")
+        book.author = new_author
+        new_author.add_book(book)
         @@all << book
       end
     end
@@ -73,14 +87,20 @@ class CliSciFi::Book
     text_all_rows.each do |row_as_text|
       arr << column_names.zip(row_as_text).to_h
     end
-    arr.each do |hash|
+    arr.each.with_index do |hash, i|
+      new_author = CliSciFi::Author.new(doc.css('span.vcard a')[i].attribute('href').value)
       book = self.new 
       hash.each do |key, value|
         book.title = hash[key] if key == "Novel\n" 
-        book.author = hash[key] if key == "Author(s)\n"
+        #book.author = hash[key] if key == "Author(s)\n"
+        new_author.name = hash[key] if key == "Author(s)\n"
         book.publisher = hash[key] if key == "Publisher or publication\n"
+        book.won = true if key == "Year\n" and hash[key] != ""
+        book.year = hash[key] if key == "Year\n" and hash[key] != ""
       end
       book.add_award("Hugo")
+      book.author = new_author
+      new_author.add_book(book)
       @@all << book
     end
   end

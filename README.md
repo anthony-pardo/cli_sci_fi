@@ -1,8 +1,6 @@
 # CliSciFi
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/cli_sci_fi`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This CLI program scrapes the Hugo and Nebula award winning science fiction novel wikipedia pages and allows the user to list all the books, list all the authors, list all double award winning books, find a random book, and find a random double award winning book. The user can also find out more information on each author and more information on each book. 
 
 ## Installation
 
@@ -22,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Follow the prompts in the CLI for information about how to use the program.
 
 ## Development
 

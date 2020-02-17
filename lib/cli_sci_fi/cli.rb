@@ -4,9 +4,10 @@ class CliSciFi::CLI
   def call 
     puts "Hello and Welcome to the Cli Sci Fi program!"
     CliSciFi::Book.scrape_books
-    @books = CliSciFi::Book.all
-    @authors = CliSciFi::Author.all
+    @books = CliSciFi::Book.all.uniq.select{|book| book.title[0] != "/"}
+    @authors = CliSciFi::Author.all.uniq
     menu
+    closing
   end
 
   def menu
@@ -16,9 +17,8 @@ class CliSciFi::CLI
       puts "1. List Books"
       puts "2. List Authors"
       puts "3. List Books that won both awards."
-      puts "4. List Books by a given author."
-      puts "5. Random book."
-      puts "6. Random double award winning book."
+      puts "4. Random book."
+      puts "5. Random double award winning book."
       input = gets.strip.downcase
       puts ""
       case input
@@ -38,15 +38,15 @@ class CliSciFi::CLI
         end
       when "3"
         list_dual_winners
+      #when "4"
+      #  puts "Please enter an author first or last name"
+      #  name = gets.strip.downcase
+      #  puts "Books by given author:"
+      #  list_books_by_author(name)
       when "4"
-        puts "Please enter an author first or last name"
-        name = gets.strip.downcase
-        puts "Books by given author:"
-        list_books_by_author(name)
-      when "5"
         rand_book = @books.sample
         puts "Your random book is: #{rand_book.title} by #{rand_book.author.name}."
-      when "6"
+      when "5"
         rand_book = CliSciFi::Book.dual_winners.sample
         puts "Your random double award winning book is: #{rand_book.title} by #{rand_book.author.name}."
       end
@@ -83,7 +83,9 @@ class CliSciFi::CLI
   def more_info_author(num)
     @authors.each.with_index(1) do |author, i|
       if num == i 
-
+        if author.scrape_author
+          puts "#{author.name} was born on #{author.born}"
+        end
       end
     end
   end
@@ -102,9 +104,13 @@ class CliSciFi::CLI
     end
   end
 
-  def list_books_by_author(name)
-    @books.select{|book| book.author.name.downcase.split(" ").include?(name)}.each.with_index(1) do |book, i|
-      puts "#{i}. #{book.title}"
-    end
+  #def list_books_by_author(name)
+  #  @books.select{|book| book.author.name.downcase.split(" ").include?(name.split(" ")[0])}.each.with_index(1) do |book, i|
+  #    puts "#{i}. #{book.title}"
+  #  end
+  #end
+
+  def closing 
+    puts "Thank you for using the Cli Sci Fi program! Bye!"
   end
 end

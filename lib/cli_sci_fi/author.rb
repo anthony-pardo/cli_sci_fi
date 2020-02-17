@@ -1,5 +1,5 @@
 class CliSciFi::Author 
-  attr_accessor :name, :born, :died, :nationality, :spouse, :books, :url 
+  attr_accessor :name, :born, :nationality, :books, :url 
 
   @@all = [] 
 
@@ -20,6 +20,23 @@ class CliSciFi::Author
     else 
       @url = "https://en.wikipedia.org/" + href
     end
+  end
+
+  def scrape_author 
+    if self.url != "#"
+      doc = Nokogiri::HTML(open(self.url))
+      begin
+        self.born = doc.css('table.infobox span.bday').text
+      rescue 
+        self.born = nil 
+      else 
+        self.born = doc.css('table.infobox span.bday').text
+      end
+    else 
+      puts "Sorry, no information on this author"
+      return false
+    end
+    true
   end
 
   def self.all 

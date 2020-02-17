@@ -5,13 +5,14 @@ class CliSciFi::CLI
     puts "Hello and Welcome to the Cli Sci Fi program!"
     CliSciFi::Book.scrape_books
     @books = CliSciFi::Book.all
+    @authors = CliSciFi::Author.all
     menu
   end
 
   def menu
     input = nil 
     while input != "exit"
-      puts "Please enter the number of the menu you would like to access:"
+      puts "Please enter the number of the menu you would like to access or 'exit':"
       puts "1. List Books"
       puts "2. List Authors"
       puts "3. List Books that won both awards."
@@ -30,6 +31,11 @@ class CliSciFi::CLI
         end
       when "2"
         list_authors
+        puts "Do you want more info on an author? If so enter the number of the author or no to go back to menu:"
+        num = gets.strip.to_i 
+        if num > 0 
+          more_info_author(num)
+        end
       when "3"
         list_dual_winners
       when "4"
@@ -74,10 +80,18 @@ class CliSciFi::CLI
     end
   end
 
+  def more_info_author(num)
+    @authors.each.with_index(1) do |author, i|
+      if num == i 
+
+      end
+    end
+  end
+
   def list_authors 
     puts "The authors are:"
-    @books.each.with_index(1) do |book, i|
-      puts "#{i}. #{book.author.name}"
+    @authors.each.with_index(1) do |author, i|
+      puts "#{i}. #{author.name}"
     end
   end
 

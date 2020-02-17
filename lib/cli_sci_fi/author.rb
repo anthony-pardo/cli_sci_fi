@@ -3,14 +3,27 @@ class CliSciFi::Author
 
   @@all = [] 
 
-  def initialize(url)
+  def initialize
     @books = []
-    @url = "https://en.wikipedia.org/" + url
     @@all << self
   end 
 
   def add_book(book)
     @books << book 
+  end
+
+  def add_href(href)
+    begin
+      @url = "https://en.wikipedia.org/" + href
+    rescue 
+      @url = "#"
+    else 
+      @url = "https://en.wikipedia.org/" + href
+    end
+  end
+
+  def self.all 
+    @@all 
   end
 
 end

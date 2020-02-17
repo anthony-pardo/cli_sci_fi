@@ -37,24 +37,27 @@ class CliSciFi::Book
     table = doc.css('table.sortable').first
     rows = table.search('tr')
     column_names = rows.shift.search('th').map(&:text)
+    column_names << "href"
     text_all_rows = rows.map do |row|
       row_name = row.css('th').text
       row_values = row.css('td').map(&:text)
-      [row_name, *row_values]
+      begin
+        href = row.css('span.vcard a').attribute('href').value
+      rescue
+        href = "#"
+      else 
+        href = row.css('span.vcard a').attribute('href').value
+      end
+      [row_name, *row_values, href]
     end
     text_all_rows.each do |row_as_text|
       arr << column_names.zip(row_as_text).to_h
     end
     arr.each.with_index do |hash, i|
-      begin
-        new_author = CliSciFi::Author.new(doc.css('span.vcard a')[i].attribute('href').value)
-      rescue
-        new_author = CliSciFi::Author.new('nil')
-      else 
-        new_author = CliSciFi::Author.new(doc.css('span.vcard a')[i].attribute('href').value)
-      end
+      new_author = CliSciFi::Author.new
       book = self.new 
       hash.each do |key, value|
+        new_author.add_href(hash[key]) if key == "href"
         book.title = hash[key] if key == "Novel\n" 
         #book.author = hash[key] if key == "Author\n"
         new_author.name = hash[key] if key == "Author\n"
@@ -79,18 +82,27 @@ class CliSciFi::Book
     table = doc.css('table.sortable').first
     rows = table.search('tr')
     column_names = rows.shift.search('th').map(&:text)
+    column_names << "href"
     text_all_rows = rows.map do |row|
       row_name = row.css('th').text
       row_values = row.css('td').map(&:text)
-      [row_name, *row_values]
+      begin
+        href = row.css('span.vcard a').attribute('href').value
+      rescue
+        href = "#"
+      else 
+        href = row.css('span.vcard a').attribute('href').value
+      end
+      [row_name, *row_values, href]
     end
     text_all_rows.each do |row_as_text|
       arr << column_names.zip(row_as_text).to_h
     end
     arr.each.with_index do |hash, i|
-      new_author = CliSciFi::Author.new(doc.css('span.vcard a')[i].attribute('href').value)
+      new_author = CliSciFi::Author.new
       book = self.new 
       hash.each do |key, value|
+        new_author.add_href(hash[key]) if key == "href"
         book.title = hash[key] if key == "Novel\n" 
         #book.author = hash[key] if key == "Author(s)\n"
         new_author.name = hash[key] if key == "Author(s)\n"

@@ -38,11 +38,6 @@ class CliSciFi::CLI
         end
       when "3"
         list_dual_winners
-      #when "4"
-      #  puts "Please enter an author first or last name"
-      #  name = gets.strip.downcase
-      #  puts "Books by given author:"
-      #  list_books_by_author(name)
       when "4"
         rand_book = @books.sample
         puts "Your random book is: #{rand_book.title} by #{rand_book.author.name}."
@@ -103,12 +98,6 @@ class CliSciFi::CLI
       puts "#{i}. #{book.title}"
     end
   end
-
-  #def list_books_by_author(name)
-  #  @books.select{|book| book.author.name.downcase.split(" ").include?(name.split(" ")[0])}.each.with_index(1) do |book, i|
-  #    puts "#{i}. #{book.title}"
-  #  end
-  #end
 
   def closing 
     puts "Thank you for using the Cli Sci Fi program! Bye!"

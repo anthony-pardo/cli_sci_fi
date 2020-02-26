@@ -3,9 +3,9 @@ require_relative "../cli_sci_fi"
 class CliSciFi::CLI
   def call 
     puts "Hello and Welcome to the Cli Sci Fi program!"
-    CliSciFi::Book.scrape_books
-    @books = CliSciFi::Book.all.uniq.select{|book| book.title[0] != "/"}
-    @authors = CliSciFi::Author.all.uniq
+    CliSciFi::Book_scraper.scrape_books
+    @books = CliSciFi::Book.all.select{|book| book.title[0] != "/"}
+    @authors = CliSciFi::Author.all
     menu
     closing
   end

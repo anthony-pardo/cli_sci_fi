@@ -78,8 +78,10 @@ class CliSciFi::CLI
   def more_info_author(num)
     @authors.each.with_index(1) do |author, i|
       if num == i 
-        if author.scrape_author
+        if CliSciFi::Author_scraper.scrape_author(author) and author.born != ""
           puts "#{author.name} was born on #{author.born}"
+        else 
+          puts "Sorry no more information on this author."
         end
       end
     end

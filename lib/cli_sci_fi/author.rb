@@ -22,23 +22,6 @@ class CliSciFi::Author
     end
   end
 
-  def scrape_author 
-    if self.url != "#"
-      doc = Nokogiri::HTML(open(self.url))
-      begin
-        self.born = doc.css('table.infobox span.bday').text
-      rescue 
-        self.born = nil 
-      else 
-        self.born = doc.css('table.infobox span.bday').text
-      end
-    else 
-      puts "Sorry, no information on this author"
-      return false
-    end
-    true
-  end
-
   def self.all 
     @@all 
   end
